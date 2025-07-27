@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Hub</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for animations or specific overrides */
+        body {
+            font-family: "Inter", sans-serif;
+        }
+        .animate-bounce-in {
+            animation: bounce-in 0.5s ease-out forwards;
+        }
+        @keyframes bounce-in {
+            0% { transform: scale(0.5); opacity: 0; }
+            70% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center p-4">
+    <div id="app-container" class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-2xl transform transition-all duration-300 hover:scale-105 relative">
+
+        <!-- My Profile icon in top right - Always visible -->
+        <button id="profile-button" class="absolute top-4 right-4 bg-gray-200 text-gray-700 p-3 rounded-full text-xl font-semibold hover:bg-gray-300 transition-colors duration-200 shadow-md flex items-center justify-center" title="My Profile (0 pts)">
+            👤
+        </button>
+
+        <!-- Home View -->
+        <div id="home-view" class="text-center">
+            <h1 class="text-4xl font-extrabold text-gray-800 mb-8">
+                Welcome to Your Fitness Hub!
+            </h1>
+            <p class="text-lg text-gray-600 mb-10">
+                Select a section to begin your fitness journey.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <button id="assistant-btn" class="p-6 bg-blue-600 text-white rounded-xl shadow-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 flex flex-col items-center justify-center h-40">
+                    <span class="text-3xl font-bold mb-2">AI Assistant</span>
+                    <span class="text-sm">Personalized Advice</span>
+                </button>
+                <button id="quiz-btn" class="p-6 bg-green-600 text-white rounded-xl shadow-lg hover:bg-green-700 transition-all duration-300 transform hover:scale-105 flex flex-col items-center justify-center h-40">
+                    <span class="text-3xl font-bold mb-2">Fitness Quiz</span>
+                    <span class="text-sm">Test Your Knowledge</span>
+                </button>
+                <button id="motivation-btn" class="p-6 bg-purple-600 text-white rounded-xl shadow-lg hover:bg-purple-700 transition-all duration-300 transform hover:scale-105 flex flex-col items-center justify-center h-40">
+                    <span class="text-3xl font-bold mb-2">Motivation</span>
+                    <span class="text-sm">Stay Inspired</span>
+                </button>
+                <button id="daily-tracker-btn" class="p-6 bg-yellow-600 text-white rounded-xl shadow-lg hover:bg-yellow-700 transition-all duration-300 transform hover:scale-105 flex flex-col items-center justify-center h-40">
+                    <span class="text-3xl font-bold mb-2">Daily Tracker</span>
+                    <span class="text-sm">Monitor Progress</span>
+                </button>
+                <button id="budget-meals-btn" class="p-6 bg-red-600 text-white rounded-xl shadow-lg hover:bg-red-700 transition-all duration-300 transform hover:scale-105 flex flex-col items-center justify-center h-40">
+                    <span class="text-3xl font-bold mb-2">Budget Meals</span>
+                    <span class="text-sm">Healthy & Affordable</span>
+                </button>
+                <button id="exercises-btn" class="p-6 bg-indigo-600 text-white rounded-xl shadow-lg hover:bg-indigo-700 transition-all duration-300 transform hover:scale-105 flex flex-col items-center justify-center h-40">
+                    <span class="text-3xl font-bold mb-2">Exercises</span>
+                    <span class="text-sm">Explore Workouts</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Fitness Assistant View -->
+        <div id="assistant-view" class="text-center" style="display: none;">
+            <h1 class="text-4xl font-extrabold text-center text-gray-800 mb-6">
+                Personalized Fitness AI
+            </h1>
+            <p class="text-center text-gray-600 mb-8">
+                Choose a fitness goal, provide your details, and get tailored advice!
+            </p>
+
+            <div class="text-sm text-gray-500 text-right mb-4">
+                Your User ID: <span id="assistant-user-id" class="font-mono text-blue-600 break-all"></span>
+            </div>
+
+            <div class="flex flex-col gap-4 mb-6">
+                <button data-goal="fatLossAndMuscleBuilding" class="goal-btn py-3 px-4 rounded-lg font-semibold shadow-md transition-all duration-200 bg-orange-600 text-white hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
+                    Fat Loss & Muscle Building
+                </button>
+                <button data-goal="weightGain" class="goal-btn py-3 px-4 rounded-lg font-semibold shadow-md transition-all duration-200 bg-yellow-600 text-white hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2">
+                    Weight Gain
+                </button>
+                <button data-goal="bodyRecomposition" class="goal-btn py-3 px-4 rounded-lg font-semibold shadow-md transition-all duration-200 bg-pink-600 text-white hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2">
+                    Body Recomposition
+                </button>
+                <button data-goal="generalFitness" class="goal-btn py-3 px-4 rounded-lg font-semibold shadow-md transition-all duration-200 bg-purple-600 text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
+                    General Fitness
+                </button>
+            </div>
+
+            <div id="user-details-input" class="mt-6 p-6 bg-gray-50 rounded-lg border border-gray-200 shadow-inner" style="display: none;">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Enter Your Details for Personalized Advice:</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div>
+                        <label for="height" class="block text-sm font-medium text-gray-700 mb-1">Height (e.g., 175cm or 5'9"):</label>
+                        <input type="text" id="height" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent" placeholder="e.g., 175cm">
+                    </div>
+                    <div>
+                        <label for="weight" class="block text-sm font-medium text-gray-700 mb-1">Weight (e.g., 70kg or 150lbs):</label>
+                        <input type="text" id="weight" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent" placeholder="e.g., 70kg">
+                    </div>
+                    <div>
+                        <label for="chest" class="block text-sm font-medium text-gray-700 mb-1">Chest (e.g., 40 inches):</label>
+                        <input type="text" id="chest" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent" placeholder="e.g., 40 inches">
+                    </div>
+                    <div>
+                        <label for="waist" class="block text-sm font-medium text-gray-700 mb-1">Waist (e.g., 32 inches):</label>
+                        <input type="text" id="waist" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent" placeholder="e.g., 32 inches">
+                    </div>
+                    <div>
+                        <label for="hips" class="block text-sm font-medium text-gray-700 mb-1">Hips (e.g., 38 inches):</label>
+                        <input type="text" id="hips" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent" placeholder="e.g., 38 inches">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="healthIssues" class="block text-sm font-medium text-gray-700 mb-1">Any health issues? (e.g., Diabetes, high blood pressure, joint pain):</label>
+                    <textarea id="healthIssues" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent resize-y min-h-[60px]" placeholder="e.g., mild knee pain, occasional back stiffness"></textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label for="pastSurgeries" class="block text-sm font-medium text-gray-700 mb-1">Any past surgeries or operations? (e.g., ACL surgery, appendectomy):</label>
+                    <textarea id="pastSurgeries" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent resize-y min-h-[60px]" placeholder="e.g., shoulder surgery 2 years ago"></textarea>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <textarea id="query-input" class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 resize-y min-h-[100px]" placeholder="e.g., 'What's a good workout routine for beginners?', 'How can I lose weight effectively?', 'Healthy meal ideas for muscle gain?'" rows="4"></textarea>
+            </div>
+
+            <button id="get-advice-btn" class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold text-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 transform hover:-translate-y-1 shadow-lg">
+                Get Personalized Advice
+            </button>
+
+            <div id="error-message" class="mt-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg" style="display: none;">
+                <p class="font-medium">Error:</p>
+                <p id="error-text"></p>
+            </div>
+
+            <div id="response-display" class="mt-6 p-6 bg-gray-50 rounded-lg border border-gray-200 shadow-inner" style="display: none;">
+                <h2 class="text-2xl font-bold text-gray-800 mb-3">AI's Personalized Response:</h2>
+                <div id="response-text" class="prose max-w-none text-gray-700 leading-relaxed"></div>
+            </div>
+            <button class="back-to-home-btn mt-6 bg-gray-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-gray-700 transition-all duration-200 shadow-md">
+                Back to Home
+            </button>
+        </div>
+
+        <!-- Fitness Quiz View -->
+        <div id="quiz-view" class="text-center" style="display: none;">
+            <h1 class="text-4xl font-extrabold text-gray-800 mb-6">
+                Fitness Quiz
+            </h1>
+            <div id="quiz-content" class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-xl mx-auto">
+                <p id="quiz-question-progress" class="text-lg text-gray-700 mb-4"></p>
+                <h2 id="quiz-question-text" class="text-2xl font-bold text-gray-800 mb-6"></h2>
+                <div id="quiz-options" class="flex flex-col gap-3 mb-6">
+                    <!-- Options will be dynamically inserted here -->
+                </div>
+                <button id="quiz-next-btn" class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold text-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 transform hover:-translate-y-1 shadow-lg" style="display: none;">
+                    Next Question
+                </button>
+            </div>
+            <div id="quiz-result" class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-xl mx-auto" style="display: none;">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Quiz Results</h2>
+                <p id="quiz-score-text" class="text-xl text-gray-700 mb-6"></p>
+                <button id="quiz-restart-btn" class="w-full bg-purple-600 text-white py-3 px-6 rounded-lg font-semibold text-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all duration-200 transform hover:-translate-y-1 shadow-lg">
+                    Play Again
+                </button>
+            </div>
+            <button class="back-to-home-btn mt-6 bg-gray-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-gray-700 transition-all duration-200 shadow-md">
+                Back to Home
+            </button>
+            <!-- Correct Answer Popup -->
+            <div id="correct-answer-popup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" style="display: none;">
+                <div class="bg-white p-8 rounded-xl shadow-2xl text-center max-w-sm w-full animate-bounce-in">
+                    <p class="text-4xl mb-4">🎉</p>
+                    <h2 class="text-2xl font-bold text-green-700 mb-4">Correct Answer!</h2>
+                    <p class="text-lg text-gray-700 mb-6">You earned a point!</p>
+                    <button id="popup-ok-btn" class="bg-blue-600 text-white py-2 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-200 shadow-md">
+                        OK
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fitness Motivation View -->
+        <div id="motivation-view" class="text-center" style="display: none;">
+            <h1 class="text-4xl font-extrabold text-gray-800 mb-6">
+                Quote of the Day
+            </h1>
+            <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-xl mx-auto">
+                <p id="quote-text" class="text-lg text-gray-700 mb-4 italic"></p>
+                <p class="text-lg text-gray-700 font-bold mt-6">
+                    Stay strong, stay consistent!
+                </p>
+            </div>
+            <button class="back-to-home-btn mt-6 bg-gray-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-gray-700 transition-all duration-200 shadow-md">
+                Back to Home
+            </button>
+        </div>
+
+        <!-- Daily Tracker View -->
+        <div id="daily-tracker-view" class="text-center" style="display: none;">
+            <h1 class="text-4xl font-extrabold text-gray-800 mb-6">
+                Daily Tracker
+            </h1>
+            <p class="text-center text-gray-600 mb-8">
+                Log your daily fitness activities here!
+            </p>
+            <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-xl mx-auto text-left">
+                <div class="mb-4">
+                    <label for="waterIntake" class="block text-sm font-medium text-gray-700 mb-1">Water Intake (liters):</label>
+                    <input type="number" id="waterIntake" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent" placeholder="e.g., 2.5" min="0" step="0.1">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="carbs" class="block text-sm font-medium text-gray-700 mb-1">Carbs (grams):</label>
+                        <input type="number" id="carbs" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent" placeholder="e.g., 200" min="0">
+                    </div>
+                    <div>
+                        <label for="fats" class="block text-sm font-medium text-gray-700 mb-1">Fats (grams):</label>
+                        <input type="number" id="fats" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent" placeholder="e.g., 60" min="0">
+                    </div>
+                    <div>
+                        <label for="protein" class="block text-sm font-medium text-gray-700 mb-1">Protein (grams):</label>
+                        <input type="number" id="protein" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent" placeholder="e.g., 150" min="0">
+                    </div>
+                    <div>
+                        <label for="fiber" class="block text-sm font-medium text-gray-700 mb-1">Fiber (grams):</label>
+                        <input type="number" id="fiber" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent" placeholder="e.g., 30" min="0">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="calories" class="block text-sm font-medium text-gray-700 mb-1">Calories (kcal):</label>
+                    <input type="number" id="calories" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent" placeholder="e.g., 2000" min="0">
+                </div>
+
+                <div class="mb-4 flex items-center">
+                    <input type="checkbox" id="workoutCompleted" class="h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+                    <label for="workoutCompleted" class="ml-2 block text-sm font-medium text-gray-700">Workout of the Day Completed?</label>
+                </div>
+
+                <div class="mb-4">
+                    <label for="stepCount" class="block text-sm font-medium text-gray-700 mb-1">Step Count:</label>
+                    <input type="number" id="stepCount" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent" placeholder="e.g., 10000" min="0">
+                </div>
+
+                <div class="mb-4 flex items-center">
+                    <input type="checkbox" id="cardioCompleted" class="h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+                    <label for="cardioCompleted" class="ml-2 block text-sm font-medium text-gray-700">Cardio Completed?</label>
+                </div>
+
+                <button id="save-daily-log-btn" class="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-semibold text-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 transform hover:-translate-y-1 shadow-lg">
+                    Save Daily Log
+                </button>
+
+                <div id="daily-log-message" class="mt-4 p-3 rounded-lg text-sm" style="display: none;"></div>
+            </div>
+            <button class="back-to-home-btn mt-6 bg-gray-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-gray-700 transition-all duration-200 shadow-md">
+                Back to Home
+            </button>
+        </div>
+
+        <!-- Budget Meals View -->
+        <div id="budget-meals-view" class="text-center" style="display: none;">
+            <h1 class="text-4xl font-extrabold text-gray-800 mb-6">
+                Budget Meals
+            </h1>
+            <p class="text-center text-gray-600 mb-8">
+                Select your daily budget to get a meal plan:
+            </p>
+            <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-xl mx-auto">
+                <div id="budget-radio-group" class="flex flex-wrap justify-center gap-4 mb-8">
+                    <!-- Radios will be dynamically inserted here -->
+                </div>
+
+                <div id="budget-meal-plan-display" class="mt-6 p-6 bg-blue-50 rounded-lg border border-blue-200 shadow-inner text-left" style="display: none;">
+                    <h2 id="budget-meal-plan-title" class="text-2xl font-bold text-blue-800 mb-3"></h2>
+                    <p id="budget-meal-plan-description" class="text-gray-700 mb-4"></p>
+                    <ul id="budget-meal-list" class="list-disc list-inside text-gray-800 space-y-2">
+                        <!-- Meals will be dynamically inserted here -->
+                    </ul>
+                </div>
+                <p id="no-budget-selected-message" class="text-lg text-gray-700">Please select a budget to view meal plans.</p>
+            </div>
+            <button class="back-to-home-btn mt-6 bg-gray-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-gray-700 transition-all duration-200 shadow-md">
+                Back to Home
+            </button>
+        </div>
+
+        <!-- Exercises View -->
+        <div id="exercises-view" class="text-center" style="display: none;">
+            <h1 class="text-4xl font-extrabold text-gray-800 mb-6">
+                Exercises & Workout Splits
+            </h1>
+            <p class="text-center text-gray-600 mb-8">
+                Choose a workout split to see example routines:
+            </p>
+            <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-xl mx-auto">
+                <div id="split-radio-group" class="flex flex-wrap justify-center gap-4 mb-8">
+                    <!-- Radios will be dynamically inserted here -->
+                </div>
+
+                <div id="workout-split-display" class="mt-6 p-6 bg-green-50 rounded-lg border border-green-200 shadow-inner text-left" style="display: none;">
+                    <h2 id="split-name" class="text-2xl font-bold text-green-800 mb-3"></h2>
+                    <p id="split-description" class="text-gray-700 mb-4"></p>
+                    <div id="split-days" class="space-y-4">
+                        <!-- Days and exercises will be dynamically inserted here -->
+                    </div>
+                    <p class="mt-6 text-sm text-gray-600 italic font-bold">
+                        Note: The images above are placeholders for visual reference. For detailed demonstrations of correct form and technique, a full application would typically feature GIFs or short video tutorials.
+                    </p>
+                </div>
+                <p id="no-split-selected-message" class="text-lg text-gray-700">Please select a workout split to view details.</p>
+            </div>
+            <button class="back-to-home-btn mt-6 bg-gray-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-gray-700 transition-all duration-200 shadow-md">
+                Back to Home
+            </button>
+        </div>
+
+        <!-- My Profile View -->
+        <div id="my-profile-view" class="text-center" style="display: none;">
+            <h1 class="text-4xl font-extrabold text-gray-800 mb-6">
+                My Profile
+            </h1>
+            <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-xl mx-auto">
+                <p class="text-lg text-gray-700 mb-4">
+                    Welcome, <span id="profile-user-id"></span>!
+                </p>
+                <p class="text-2xl font-bold text-blue-600 mb-6">
+                    Total Points: <span id="profile-total-points"></span>
+                </p>
+                <p class="text-md text-gray-600">
+                    (Points are accumulated from correct answers in the Fitness Quiz and your daily performance.)
+                </p>
+
+                <button class="back-to-home-btn mt-6 bg-gray-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-gray-700 transition-all duration-200 shadow-md">
+                    Back to Home
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="module">
+        // Firebase Imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global State Variables (equivalent to React's useState)
+        let currentView = 'home';
+        let userId = null;
+        let db = null;
+        let auth = null;
+        let isAuthReady = false;
+
+        let selectedGoal = null;
+        let height = '';
+        let weight = '';
+        let chest = '';
+        let waist = '';
+        let hips = '';
+        let healthIssues = '';
+        let pastSurgeries = '';
+
+        // Quiz States
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let showResult = false;
+        let selectedOption = null;
+        let isAnswerCorrect = null;
+        let shuffledQuizQuestions = [];
+        let showCorrectAnswerPopup = false;
+        let userPoints = 0; // Total points from quiz and daily tracker
+
+        // Motivation State
+        let quoteOfTheDay = '';
+
+        // Daily Tracker States
+        let dailyWaterIntake = '';
+        let dailyCarbs = '';
+        let dailyFats = '';
+        let dailyProtein = '';
+        let dailyFiber = '';
+        let dailyCalories = '';
+        let dailyWorkoutCompleted = false;
+        let dailyStepCount = '';
+        let dailyCardioCompleted = false;
+        let dailyLogMessage = '';
+        let pointsEarnedToday = 0;
+
+        // Budget Meals State
+        let selectedBudget = null;
+
+        // Exercises State
+        let selectedSplit = null;
+
+        // Constants (Data from React component)
+        const allQuizQuestions = [
+            { question: "What is the recommended daily water intake for an adult?", options: ["1-2 liters", "2-3 liters", "3-4 liters", "More than 4 liters"], answer: "2-3 liters" },
+            { question: "Which macronutrient is primarily responsible for muscle repair and growth?", options: ["Carbohydrates", "Fats", "Proteins", "Vitamins"], answer: "Proteins" },
+            { question: "How many minutes of moderate-intensity aerobic activity are recommended per week for adults?", options: ["75 minutes", "100 minutes", "150 minutes", "200 minutes"], answer: "150 minutes" },
+            { question: "Which exercise is best for improving cardiovascular health?", options: ["Weightlifting", "Yoga", "Running", "Pilates"], answer: "Running" },
+            { question: "What is the primary benefit of warming up before a workout?", options: ["To burn more calories", "To prevent injuries", "To build muscle faster", "To increase flexibility only"], answer: "To prevent injuries" },
+            { question: "What is the ideal frequency for strength training for beginners?", options: ["Once a week", "2-3 times a week", "Every day", "Only when sore"], answer: "2-3 times a week" },
+            { question: "Which type of stretching is best performed after a workout?", options: ["Dynamic stretching", "Ballistic stretching", "Static stretching", "PNF stretching"], answer: "Static stretching" },
+            { question: "What is a common sign of dehydration during exercise?", options: ["Increased energy", "Clear urine", "Headache and fatigue", "Muscle cramps"], answer: "Headache and fatigue" },
+            { question: "Which food group is the primary source of complex carbohydrates?", options: ["Dairy", "Fruits", "Grains", "Meats"], answer: "Grains" },
+            { question: "What does 'HIIT' stand for in fitness?", options: ["High-Intensity Interval Training", "Heavy Impact Interval Training", "Health Improvement Integration Techniques", "High Intensity Isometric Training"], answer: "High-Intensity Interval Training" }
+        ];
+
+        const motivationalQuotes = [
+            "The only bad workout is the one that didn't happen.",
+            "Believe you can and you're halfway there.",
+            "Your body can stand almost anything. It's your mind that you have to convince.",
+            "Strength does not come from physical capacity. It comes from an indomitable will.",
+            "The last three or four reps is what makes the muscle grow. This area of pain divides a champion from someone who is not a champion.",
+            "The difference between the impossible and the possible lies in a person's determination.",
+            "Success is walking from failure to failure with no loss of enthusiasm.",
+            "Today's actions are tomorrow's results. No more excuses. Eat clean, train hard, and stay focused.",
+            "Push yourself because no one else is going to do it for you.",
+            "The pain you feel today will be the strength you feel tomorrow."
+        ];
+
+        const budgetMealPlans = {
+            '100': { title: "Budget-Friendly Meals (Approx. ₹100/day)", description: "Simple, nutritious, and very economical options.", meals: [{ type: "Breakfast", item: "Oatmeal (50g) with water/milk and a banana" }, { type: "Lunch", item: "Rice (1 cup) with Dal (lentil curry, 1 cup)" }, { type: "Dinner", item: "2 Roti/Chapati with mixed vegetable curry" }] },
+            '150': { title: "Economical & Balanced Meals (Approx. ₹150/day)", description: "Slightly more variety and protein sources.", meals: [{ type: "Breakfast", item: "2 Eggs (boiled/scrambled) with 2 slices of whole-wheat bread" }, { type: "Lunch", item: "Rice (1 cup) with Chicken/Paneer curry (small portion) and salad" }, { type: "Dinner", item: "2 Roti/Chapati with Chana Masala (chickpea curry) and curd" }] },
+            '200': { title: "Moderate Budget, Good Variety (Approx. ₹200/day)", description: "Offers a good balance of macros and taste.", meals: [{ type: "Breakfast", item: "Smoothie (milk, banana, spinach, a spoon of peanut butter)" }, { type: "Lunch", item: "Brown Rice (1 cup) with Fish/Chicken/Tofu (medium portion) and stir-fried veggies" }, { type: "Snack", item: "A handful of nuts (almonds/peanuts)" }, { type: "Dinner", item: "Quinoa/Millet (1 cup cooked) with mixed bean curry and a side salad" }] },
+            '250': { title: "Comfortable Budget, Diverse Options (Approx. ₹250+/day)", description: "More flexibility for diverse ingredients and larger portions.", meals: [{ type: "Breakfast", item: "Greek yogurt with berries and granola" }, { type: "Lunch", item: "Chicken/Paneer/Tofu Salad with mixed greens, chickpeas, and light dressing" }, { type: "Snack", item: "Fruit (apple/orange) and a small portion of roasted chana" }, { type: "Dinner", item: "Whole wheat pasta with lean ground meat/vegetable sauce and a side of steamed broccoli" }] }
+        };
+
+        const workoutSplits = {
+            'broSplit': { name: "Bro Split", description: "Focuses on training one or two muscle groups per workout, typically over 5-6 days a week. Ideal for advanced lifters who can handle high volume per muscle group.", days: [{ day: "Day 1", muscles: "Chest", exercises: [{ name: "Bench Press", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Bench+Press+Form" }, { name: "Incline Dumbbell Press", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Incline+DB+Press+Form" }, { name: "Cable Flyes", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Cable+Flyes+Form" }] }, { day: "Day 2", muscles: "Back", exercises: [{ name: "Pull-ups", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Pull-ups+Form" }, { name: "Barbell Rows", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Barbell+Rows+Form" }, { name: "Lat Pulldowns", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Lat+Pulldowns+Form" }] }, { day: "Day 3", muscles: "Shoulders", exercises: [{ name: "Overhead Press", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Overhead+Press+Form" }, { name: "Lateral Raises", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Lateral+Raises+Form" }, { name: "Face Pulls", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Face+Pull+Form" }] }, { day: "Day 4", muscles: "Legs", exercises: [{ name: "Squats", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Squats+Form" }, { name: "Deadlifts", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Deadlifts+Form" }, { name: "Leg Press", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Leg+Press+Form" }, { name: "Hamstring Curls", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Hamstring+Curls+Form" }] }, { day: "Day 5", muscles: "Arms", exercises: [{ name: "Bicep Curls", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Bicep+Curls+Form" }, { name: "Tricep Pushdowns", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Tricep+Pushdowns+Form" }, { name: "Hammer Curls", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Hammer+Curls+Form" }] }, { day: "Day 6", muscles: "Rest or Abs/Calves", exercises: [] }] },
+            'pplSplit': { name: "Push Pull Legs (PPL) Split", description: "Divides your body into three workout types: Push (chest, shoulders, triceps), Pull (back, biceps), and Legs. Typically done 3-6 times a week.", days: [{ day: "Day 1", muscles: "Push", exercises: [{ name: "Bench Press", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Bench+Press+Form" }, { name: "Overhead Press", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Overhead+Press+Form" }, { name: "Tricep Extensions", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Tricep+Extensions+Form" }] }, { day: "Day 2", muscles: "Pull", exercises: [{ name: "Deadlifts", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Deadlifts+Form" }, { name: "Pull-ups", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Pull-ups+Form" }, { name: "Barbell Rows", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Barbell+Rows+Form" }, { name: "Bicep Curls", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Bicep+Curls+Form" }] }, { day: "Day 3", muscles: "Legs", exercises: [{ name: "Squats", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Squats+Form" }, { name: "Leg Press", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Leg+Press+Form" }, { name: "Lunges", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Lunges+Form" }, { name: "Calf Raises", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Calf+Raises+Form" }] }, { day: "Day 4", muscles: "Rest or Repeat Cycle", exercises: [] }] },
+            'upperLowerSplit': { name: "Upper / Lower Split", description: "Alternates between upper body and lower body workouts. Common for 4-day programs, allowing good frequency for muscle groups.", days: [{ day: "Day 1", muscles: "Upper Body", exercises: [{ name: "Bench Press", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Bench+Press+Form" }, { name: "Barbell Rows", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Barbell+Rows+Form" }, { name: "Overhead Press", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Overhead+Press+Form" }, { name: "Bicep Curls", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Bicep+Curls+Form" }, { name: "Tricep Pushdowns", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Tricep+Pushdowns+Form" }] }, { day: "Day 2", muscles: "Lower Body", exercises: [{ name: "Squats", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Squats+Form" }, { name: "Deadlifts", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Deadlifts+Form" }, { name: "Leg Press", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Leg+Press+Form" }, { name: "Hamstring Curls", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Hamstring+Curls+Form" }, { name: "Calf Raises", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Calf+Raises+Form" }] }, { day: "Day 3", muscles: "Rest", exercises: [] }, { day: "Day 4", muscles: "Upper Body", exercises: [{ name: "Incline Dumbbell Press", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Incline+DB+Press+Form" }, { name: "Lat Pulldowns", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Lat+Pulldowns+Form" }, { name: "Lateral Raises", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Lateral+Raises+Form" }, { name: "Face Pulls", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Face+Pull+Form" }, { name: "Dips", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Dips+Form" }] }, { day: "Day 5", muscles: "Lower Body", exercises: [{ name: "Front Squats", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Front+Squats+Form" }, { name: "Romanian Deadlifts", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Romanian+DL+Form" }, { name: "Leg Extensions", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Leg+Extensions+Form" }, { name: "Glute Bridges", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Glute+Bridges+Form" }] }, { day: "Day 6", muscles: "Rest", exercises: [] }] },
+            'fullBodySplit': { name: "Full Body Split", description: "Trains all major muscle groups in each session, typically 2-3 times a week. Great for beginners and those with limited time, promoting high frequency.", days: [{ day: "Day 1", muscles: "Full Body", exercises: [{ name: "Squats", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Squats+Form" }, { name: "Bench Press", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Bench+Press+Form" }, { name: "Barbell Rows", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Barbell+Rows+Form" }, { name: "Overhead Press", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Overhead+Press+Form" }, { name: "Plank", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Plank+Form" }] }, { day: "Day 2", muscles: "Rest", exercises: [] }, { day: "Day 3", muscles: "Full Body", exercises: [{ name: "Deadlifts", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Deadlifts+Form" }, { name: "Pull-ups", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Pull-ups+Form" }, { name: "Dips", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Dips+Form" }, { name: "Lunges", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Lunges+Form" }, { name: "Push-ups", imageUrl: "https://placehold.co/150x100/ADD8E6/000000?text=Push-ups+Form" }] }, { day: "Day 4", muscles: "Rest", exercises: [] }] }
+        };
+
+        // DOM Elements (cached for performance)
+        const views = {
+            home: document.getElementById('home-view'),
+            assistant: document.getElementById('assistant-view'),
+            quiz: document.getElementById('quiz-view'),
+            motivation: document.getElementById('motivation-view'),
+            dailyTracker: document.getElementById('daily-tracker-view'),
+            budgetMeals: document.getElementById('budget-meals-view'),
+            exercises: document.getElementById('exercises-view'),
+            myProfile: document.getElementById('my-profile-view')
+        };
+
+        const profileButton = document.getElementById('profile-button');
+
+        // Assistant View Elements
+        const assistantUserIdSpan = document.getElementById('assistant-user-id');
+        const goalButtons = document.querySelectorAll('.goal-btn');
+        const userDetailsInputDiv = document.getElementById('user-details-input');
+        const heightInput = document.getElementById('height');
+        const weightInput = document.getElementById('weight');
+        const chestInput = document.getElementById('chest');
+        const waistInput = document.getElementById('waist');
+        const hipsInput = document.getElementById('hips');
+        const healthIssuesTextarea = document.getElementById('healthIssues');
+        const pastSurgeriesTextarea = document.getElementById('pastSurgeries');
+        const queryInput = document.getElementById('query-input');
+        const getAdviceBtn = document.getElementById('get-advice-btn');
+        const errorMessageDiv = document.getElementById('error-message');
+        const errorTextSpan = document.getElementById('error-text');
+        const responseDisplayDiv = document.getElementById('response-display');
+        const responseTextDiv = document.getElementById('response-text');
+
+        // Quiz View Elements
+        const quizContentDiv = document.getElementById('quiz-content');
+        const quizQuestionProgress = document.getElementById('quiz-question-progress');
+        const quizQuestionText = document.getElementById('quiz-question-text');
+        const quizOptionsDiv = document.getElementById('quiz-options');
+        const quizNextBtn = document.getElementById('quiz-next-btn');
+        const quizResultDiv = document.getElementById('quiz-result');
+        const quizScoreText = document.getElementById('quiz-score-text');
+        const quizRestartBtn = document.getElementById('quiz-restart-btn');
+        const correctAnswerPopup = document.getElementById('correct-answer-popup');
+        const popupOkBtn = document.getElementById('popup-ok-btn');
+
+        // Motivation View Elements
+        const quoteTextSpan = document.getElementById('quote-text');
+
+        // Daily Tracker View Elements
+        const dailyWaterIntakeInput = document.getElementById('waterIntake');
+        const dailyCarbsInput = document.getElementById('carbs');
+        const dailyFatsInput = document.getElementById('fats');
+        const dailyProteinInput = document.getElementById('protein');
+        const dailyFiberInput = document.getElementById('fiber');
+        const dailyCaloriesInput = document.getElementById('calories');
+        const dailyWorkoutCompletedCheckbox = document.getElementById('workoutCompleted');
+        const dailyStepCountInput = document.getElementById('stepCount');
+        const dailyCardioCompletedCheckbox = document.getElementById('cardioCompleted');
+        const saveDailyLogBtn = document.getElementById('save-daily-log-btn');
+        const dailyLogMessageDiv = document.getElementById('daily-log-message');
+
+        // Budget Meals View Elements
+        const budgetRadioGroup = document.getElementById('budget-radio-group');
+        const budgetMealPlanDisplay = document.getElementById('budget-meal-plan-display');
+        const budgetMealPlanTitle = document.getElementById('budget-meal-plan-title');
+        const budgetMealPlanDescription = document.getElementById('budget-meal-plan-description');
+        const budgetMealList = document.getElementById('budget-meal-list');
+        const noBudgetSelectedMessage = document.getElementById('no-budget-selected-message');
+
+        // Exercises View Elements
+        const splitRadioGroup = document.getElementById('split-radio-group');
+        const workoutSplitDisplay = document.getElementById('workout-split-display');
+        const splitNameH2 = document.getElementById('split-name');
+        const splitDescriptionP = document.getElementById('split-description');
+        const splitDaysDiv = document.getElementById('split-days');
+        const noSplitSelectedMessage = document.getElementById('no-split-selected-message');
+
+        // My Profile View Elements
+        const profileUserIdSpan = document.getElementById('profile-user-id');
+        const profileTotalPointsSpan = document.getElementById('profile-total-points');
+
+
+        // Helper Functions
+        function getRandomQuote() {
+            const randomIndex = Math.floor(Math.random() * motivationalQuotes.length);
+            return motivationalQuotes[randomIndex];
+        }
+
+        function getCurrentDate() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function shuffleArray(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex !== 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        // --- State Update & DOM Rendering Functions ---
+
+        function updateProfileButton() {
+            profileButton.title = `My Profile (${userPoints} pts)`;
+        }
+
+        function updateAssistantView() {
+            if (userId) {
+                assistantUserIdSpan.textContent = `User ${userId.substring(0, 8)}...`;
+            } else {
+                assistantUserIdSpan.textContent = 'Guest';
+            }
+
+            // Update input values
+            heightInput.value = height;
+            weightInput.value = weight;
+            chestInput.value = chest;
+            waistInput.value = waist;
+            hipsInput.value = hips;
+            healthIssuesTextarea.value = healthIssues;
+            pastSurgeriesTextarea.value = pastSurgeries;
+            queryInput.value = query;
+
+            // Update goal button styles
+            goalButtons.forEach(button => {
+                button.classList.remove('bg-orange-700', 'ring-2', 'ring-orange-500', 'bg-yellow-700', 'ring-yellow-500', 'bg-pink-700', 'ring-pink-500', 'bg-purple-700', 'ring-purple-500');
+                button.classList.add('hover:bg-opacity-80'); // General hover for all
+                
+                if (button.dataset.goal === selectedGoal) {
+                    if (button.dataset.goal === 'fatLossAndMuscleBuilding') {
+                        button.classList.add('bg-orange-700', 'ring-2', 'ring-orange-500');
+                    } else if (button.dataset.goal === 'weightGain') {
+                        button.classList.add('bg-yellow-700', 'ring-2', 'ring-yellow-500');
+                    } else if (button.dataset.goal === 'bodyRecomposition') {
+                        button.classList.add('bg-pink-700', 'ring-2', 'ring-pink-500');
+                    } else if (button.dataset.goal === 'generalFitness') {
+                        button.classList.add('bg-purple-700', 'ring-2', 'ring-purple-500');
+                    }
+                } else {
+                    if (button.dataset.goal === 'fatLossAndMuscleBuilding') {
+                        button.classList.add('bg-orange-600');
+                    } else if (button.dataset.goal === 'weightGain') {
+                        button.classList.add('bg-yellow-600');
+                    } else if (button.dataset.goal === 'bodyRecomposition') {
+                        button.classList.add('bg-pink-600');
+                    } else if (button.dataset.goal === 'generalFitness') {
+                        button.classList.add('bg-purple-600');
+                    }
+                }
+            });
+
+
+            // Show/hide user details input
+            userDetailsInputDiv.style.display = selectedGoal ? 'block' : 'none';
+
+            // Show/hide error and response
+            errorMessageDiv.style.display = error ? 'block' : 'none';
+            errorTextSpan.textContent = error;
+            responseDisplayDiv.style.display = response ? 'block' : 'none';
+            responseTextDiv.innerHTML = response.split('\n').map(p => `<p class="mb-2">${p}</p>`).join('');
+
+            getAdviceBtn.disabled = isLoading;
+            getAdviceBtn.textContent = isLoading ? 'Thinking...' : 'Get Personalized Advice';
+        }
+
+        function updateQuizView() {
+            if (showResult) {
+                quizContentDiv.style.display = 'none';
+                quizResultDiv.style.display = 'block';
+                quizScoreText.textContent = `You scored ${score} out of ${shuffledQuizQuestions.length}!`;
+            } else {
+                quizContentDiv.style.display = 'block';
+                quizResultDiv.style.display = 'none';
+                if (shuffledQuizQuestions.length > 0) {
+                    const currentQuestion = shuffledQuizQuestions[currentQuestionIndex];
+                    quizQuestionProgress.textContent = `Question ${currentQuestionIndex + 1} of ${shuffledQuizQuestions.length}`;
+                    quizQuestionText.textContent = currentQuestion.question;
+
+                    quizOptionsDiv.innerHTML = ''; // Clear previous options
+                    currentQuestion.options.forEach((option, index) => {
+                        const button = document.createElement('button');
+                        button.textContent = option;
+                        button.classList.add('py-3', 'px-4', 'rounded-lg', 'font-semibold', 'transition-all', 'duration-200');
+                        button.classList.add('bg-blue-100', 'text-blue-800', 'hover:bg-blue-200');
+                        button.addEventListener('click', () => handleOptionClick(option));
+
+                        if (selectedOption !== null) {
+                            button.disabled = true;
+                            if (selectedOption === option) {
+                                if (isAnswerCorrect === true) {
+                                    button.classList.add('bg-green-500', 'text-white');
+                                } else {
+                                    button.classList.add('bg-red-500', 'text-white');
+                                }
+                            } else if (option === currentQuestion.answer) {
+                                button.classList.add('border-2', 'border-green-500');
+                            } else {
+                                button.classList.add('opacity-50');
+                            }
+                        }
+                        quizOptionsDiv.appendChild(button);
+                    });
+
+                    quizNextBtn.style.display = selectedOption !== null ? 'block' : 'none';
+                } else {
+                    quizQuestionProgress.textContent = 'Loading quiz questions...';
+                    quizQuestionText.textContent = '';
+                    quizOptionsDiv.innerHTML = '';
+                    quizNextBtn.style.display = 'none';
+                }
+            }
+            correctAnswerPopup.style.display = showCorrectAnswerPopup ? 'flex' : 'none';
+        }
+
+        function updateMotivationView() {
+            quoteTextSpan.textContent = `"${quoteOfTheDay}"`;
+        }
+
+        function updateDailyTrackerView() {
+            dailyWaterIntakeInput.value = dailyWaterIntake;
+            dailyCarbsInput.value = dailyCarbs;
+            dailyFatsInput.value = dailyFats;
+            dailyProteinInput.value = dailyProtein;
+            dailyFiberInput.value = dailyFiber;
+            dailyCaloriesInput.value = dailyCalories;
+            dailyWorkoutCompletedCheckbox.checked = dailyWorkoutCompleted;
+            dailyStepCountInput.value = dailyStepCount;
+            dailyCardioCompletedCheckbox.checked = dailyCardioCompleted;
+
+            dailyLogMessageDiv.style.display = dailyLogMessage ? 'block' : 'none';
+            dailyLogMessageDiv.textContent = dailyLogMessage;
+            if (dailyLogMessage.includes('Failed')) {
+                dailyLogMessageDiv.classList.add('bg-red-100', 'text-red-700');
+                dailyLogMessageDiv.classList.remove('bg-green-100', 'text-green-700');
+            } else {
+                dailyLogMessageDiv.classList.add('bg-green-100', 'text-green-700');
+                dailyLogMessageDiv.classList.remove('bg-red-100', 'text-red-700');
+            }
+        }
+
+        function updateBudgetMealsView() {
+            budgetRadioGroup.innerHTML = ''; // Clear existing radios
+            Object.keys(budgetMealPlans).forEach(budget => {
+                const label = document.createElement('label');
+                label.classList.add('inline-flex', 'items-center');
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.name = 'budget';
+                input.value = budget;
+                input.classList.add('form-radio', 'h-5', 'w-5', 'text-blue-600');
+                input.checked = selectedBudget === budget;
+                input.addEventListener('change', (e) => {
+                    selectedBudget = e.target.value;
+                    updateBudgetMealsView(); // Re-render to show selected plan
+                });
+                const span = document.createElement('span');
+                span.classList.add('ml-2', 'text-lg', 'text-gray-800');
+                span.textContent = `₹${budget}/day`;
+                label.appendChild(input);
+                label.appendChild(span);
+                budgetRadioGroup.appendChild(label);
+            });
+
+            if (selectedBudget && budgetMealPlans[selectedBudget]) {
+                noBudgetSelectedMessage.style.display = 'none';
+                budgetMealPlanDisplay.style.display = 'block';
+                budgetMealPlanTitle.textContent = budgetMealPlans[selectedBudget].title;
+                budgetMealPlanDescription.textContent = budgetMealPlans[selectedBudget].description;
+                budgetMealList.innerHTML = ''; // Clear previous meals
+                budgetMealPlans[selectedBudget].meals.forEach(meal => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<span class="font-semibold">${meal.type}:</span> ${meal.item}`;
+                    budgetMealList.appendChild(li);
+                });
+            } else {
+                noBudgetSelectedMessage.style.display = 'block';
+                budgetMealPlanDisplay.style.display = 'none';
+            }
+        }
+
+        function updateExercisesView() {
+            splitRadioGroup.innerHTML = ''; // Clear existing radios
+            Object.keys(workoutSplits).forEach(splitKey => {
+                const label = document.createElement('label');
+                label.classList.add('inline-flex', 'items-center');
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.name = 'workoutSplit';
+                input.value = splitKey;
+                input.classList.add('form-radio', 'h-5', 'w-5', 'text-green-600');
+                input.checked = selectedSplit === splitKey;
+                input.addEventListener('change', (e) => {
+                    selectedSplit = e.target.value;
+                    updateExercisesView(); // Re-render to show selected split
+                });
+                const span = document.createElement('span');
+                span.classList.add('ml-2', 'text-lg', 'text-gray-800');
+                span.textContent = workoutSplits[splitKey].name;
+                label.appendChild(input);
+                label.appendChild(span);
+                splitRadioGroup.appendChild(label);
+            });
+
+            if (selectedSplit && workoutSplits[selectedSplit]) {
+                noSplitSelectedMessage.style.display = 'none';
+                workoutSplitDisplay.style.display = 'block';
+                splitNameH2.textContent = workoutSplits[selectedSplit].name;
+                splitDescriptionP.textContent = workoutSplits[selectedSplit].description;
+                splitDaysDiv.innerHTML = ''; // Clear previous days
+                workoutSplits[selectedSplit].days.forEach(dayInfo => {
+                    const dayDiv = document.createElement('div');
+                    dayDiv.classList.add('p-4', 'bg-green-100', 'rounded-lg');
+                    const h3 = document.createElement('h3');
+                    h3.classList.add('text-lg', 'font-semibold', 'text-green-700', 'mb-2');
+                    h3.textContent = `${dayInfo.day}: ${dayInfo.muscles}`;
+                    dayDiv.appendChild(h3);
+
+                    if (dayInfo.exercises && dayInfo.exercises.length > 0) {
+                        const ul = document.createElement('ul');
+                        ul.classList.add('list-disc', 'list-inside', 'text-gray-800', 'space-y-2');
+                        dayInfo.exercises.forEach(exercise => {
+                            const li = document.createElement('li');
+                            li.classList.add('flex', 'items-center', 'gap-3');
+                            const img = document.createElement('img');
+                            img.src = exercise.imageUrl;
+                            img.alt = exercise.name;
+                            img.classList.add('w-20', 'h-20', 'rounded-md', 'object-cover', 'shadow-sm');
+                            img.onerror = (e) => { e.target.onerror = null; e.target.src="https://placehold.co/80x80/cccccc/000000?text=No+Image"; };
+                            const span = document.createElement('span');
+                            span.textContent = exercise.name;
+                            li.appendChild(img);
+                            li.appendChild(span);
+                            ul.appendChild(li);
+                        });
+                        dayDiv.appendChild(ul);
+                    } else {
+                        const p = document.createElement('p');
+                        p.classList.add('text-gray-600');
+                        p.textContent = dayInfo.muscles;
+                        dayDiv.appendChild(p);
+                    }
+                    splitDaysDiv.appendChild(dayDiv);
+                });
+            } else {
+                noSplitSelectedMessage.style.display = 'block';
+                workoutSplitDisplay.style.display = 'none';
+            }
+        }
+
+        function updateMyProfileView() {
+            if (userId) {
+                profileUserIdSpan.textContent = `User ${userId.substring(0, 8)}...`;
+            } else {
+                profileUserIdSpan.textContent = 'Guest';
+            }
+            profileTotalPointsSpan.textContent = userPoints;
+        }
+
+        // Main View Renderer
+        function renderView(viewName) {
+            Object.values(views).forEach(view => {
+                view.style.display = 'none';
+            });
+            views[viewName].style.display = 'block';
+            currentView = viewName; // Update global state
+
+            // Call specific update functions for the current view
+            switch (viewName) {
+                case 'assistant':
+                    updateAssistantView();
+                    break;
+                case 'quiz':
+                    updateQuizView();
+                    break;
+                case 'motivation':
+                    quoteOfTheDay = getRandomQuote(); // Set new quote on view entry
+                    updateMotivationView();
+                    break;
+                case 'dailyTracker':
+                    loadDailyLog(); // Load data when entering daily tracker
+                    updateDailyTrackerView();
+                    break;
+                case 'budgetMeals':
+                    updateBudgetMealsView();
+                    break;
+                case 'exercises':
+                    updateExercisesView();
+                    break;
+                case 'myProfile':
+                    updateMyProfileView();
+                    break;
+            }
+        }
+
+        // --- Firebase & Data Logic ---
+
+        async function saveUserPoints(points) {
+            if (db && userId && isAuthReady) {
+                const userDocRef = doc(db, `artifacts/${__app_id}/users/${userId}/profile`, 'data');
+                try {
+                    await updateDoc(userDocRef, { userPoints: points });
+                    console.log("User points updated in Firestore!");
+                    updateProfileButton(); // Update profile button title
+                    updateMyProfileView(); // Update profile view if active
+                } catch (dbError) {
+                    console.error("Error saving user points:", dbError);
+                    // setError("Failed to save points."); // No direct error display in this context
+                }
+            }
+        }
+
+        async function saveUserProfile() {
+            if (db && userId && isAuthReady) {
+                const userDocRef = doc(db, `artifacts/${__app_id}/users/${userId}/profile`, 'data');
+                try {
+                    await setDoc(userDocRef, {
+                        height,
+                        weight,
+                        chest,
+                        waist,
+                        hips,
+                        healthIssues,
+                        pastSurgeries,
+                        userPoints,
+                    }, { merge: true });
+                    console.log("User profile updated in Firestore!");
+                } catch (dbError) {
+                    console.error("Error saving user profile:", dbError);
+                    // setError("Failed to save profile.");
+                }
+            }
+        }
+
+        async function loadUserData() {
+            if (db && userId && isAuthReady) {
+                const userDocRef = doc(db, `artifacts/${__app_id}/users/${userId}/profile`, 'data');
+                try {
+                    const docSnap = await getDoc(userDocRef);
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        userPoints = data.userPoints || 0;
+                        height = data.height || '';
+                        weight = data.weight || '';
+                        chest = data.chest || '';
+                        waist = data.waist || '';
+                        hips = data.hips || '';
+                        healthIssues = data.healthIssues || '';
+                        pastSurgeries = data.pastSurgeries || '';
+                    } else {
+                        await setDoc(userDocRef, { userPoints: 0 });
+                        userPoints = 0;
+                    }
+                    shuffledQuizQuestions = shuffleArray([...allQuizQuestions]);
+                    updateProfileButton(); // Update profile button after loading points
+                } catch (dbError) {
+                    console.error("Error loading user data:", dbError);
+                    // setError("Failed to load user data.");
+                }
+            }
+        }
+
+        async function handleQuery() {
+            const currentQuery = queryInput.value.trim();
+            if (!currentQuery) {
+                error = 'Please enter a fitness query.';
+                errorMessageDiv.style.display = 'block';
+                errorTextSpan.textContent = error;
+                return;
+            }
+            if (selectedGoal && (!heightInput.value.trim() || !weightInput.value.trim())) {
+                error = 'Please enter your height and weight for personalized advice.';
+                errorMessageDiv.style.display = 'block';
+                errorTextSpan.textContent = error;
+                return;
+            }
+
+            isLoading = true;
+            response = '';
+            error = '';
+            updateAssistantView(); // Update UI for loading state
+
+            // Collect current user profile data from inputs before saving
+            height = heightInput.value;
+            weight = weightInput.value;
+            chest = chestInput.value;
+            waist = waistInput.value;
+            hips = hipsInput.value;
+            healthIssues = healthIssuesTextarea.value;
+            pastSurgeries = pastSurgeriesTextarea.value;
+
+            await saveUserProfile();
+
+            try {
+                let fullQuery = currentQuery;
+                if (selectedGoal) {
+                    fullQuery += ` My height is ${height}, weight is ${weight}.`;
+                    if (chest.trim()) fullQuery += ` Chest: ${chest}.`;
+                    if (waist.trim()) fullQuery += ` Waist: ${waist}.`;
+                    if (hips.trim()) fullQuery += ` Hips: ${hips}.`;
+                    
+                    if (healthIssues.trim()) {
+                        fullQuery += ` I have the following health issues: ${healthIssues}.`;
+                    }
+                    if (pastSurgeries.trim()) {
+                        fullQuery += ` I have had past surgeries/operations: ${pastSurgeries}.`;
+                    }
+                    fullQuery += ` Please provide a tailored diet and workout schedule considering these details and any potential "minus points" (areas needing caution or improvement based on my health/body composition).`;
+                }
+
+                const payload = { contents: [{ role: "user", parts: [{ text: fullQuery }] }] };
+                const apiKey = ""; // Canvas will provide this
+
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const fetchResponse = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!fetchResponse.ok) {
+                    const errorData = await fetchResponse.json();
+                    throw new Error(`API error: ${fetchResponse.status} - ${errorData.error?.message || 'Unknown error'}`);
+                }
+
+                const result = await fetchResponse.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    response = result.candidates[0].content.parts[0].text;
+                } else {
+                    response = 'No response from AI. Please try again.';
+                }
+            } catch (err) {
+                console.error("Error fetching AI response:", err);
+                error = `Failed to get a response: ${err.message}`;
+            } finally {
+                isLoading = false;
+                updateAssistantView(); // Update UI after response/error
+            }
+        }
+
+        function selectGoal(goal) {
+            let prefilledQuery = '';
+            switch (goal) {
+                case 'fatLossAndMuscleBuilding':
+                    prefilledQuery = 'What are some effective strategies for fat loss and muscle building simultaneously (body recomposition)?';
+                    break;
+                case 'weightGain':
+                    prefilledQuery = 'Can you suggest a diet and exercise routine for healthy weight gain and muscle mass?';
+                    break;
+                case 'bodyRecomposition':
+                    prefilledQuery = 'How can I achieve body recomposition (lose fat and gain muscle simultaneously)?';
+                    break;
+                case 'generalFitness':
+                    prefilledQuery = 'What is a balanced workout and diet plan for overall general fitness and well-being?';
+                    break;
+                default:
+                    prefilledQuery = '';
+            }
+            queryInput.value = prefilledQuery;
+            selectedGoal = goal;
+            response = '';
+            error = '';
+            // Clear user details when a new goal is selected, but they will be reloaded from Firestore if available
+            height = '';
+            weight = '';
+            chest = '';
+            waist = '';
+            hips = '';
+            healthIssues = '';
+            pastSurgeries = '';
+            updateAssistantView(); // Update UI
+        }
+
+        function handleOptionClick(option) {
+            if (selectedOption !== null) return;
+
+            selectedOption = option;
+            const currentQuestion = shuffledQuizQuestions[currentQuestionIndex];
+            const correct = option === currentQuestion.answer;
+            isAnswerCorrect = correct;
+
+            if (correct) {
+                score++;
+                userPoints++;
+                saveUserPoints(userPoints);
+                showCorrectAnswerPopup = true;
+            }
+            updateQuizView(); // Re-render quiz to show selection and popup
+        }
+
+        function handleNextQuestion() {
+            showCorrectAnswerPopup = false;
+            selectedOption = null;
+            isAnswerCorrect = null;
+            if (currentQuestionIndex < shuffledQuizQuestions.length - 1) {
+                currentQuestionIndex++;
+            } else {
+                showResult = true;
+            }
+            updateQuizView(); // Re-render quiz
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            showResult = false;
+            selectedOption = null;
+            isAnswerCorrect = null;
+            shuffledQuizQuestions = shuffleArray([...allQuizQuestions]);
+            showCorrectAnswerPopup = false;
+            updateQuizView(); // Re-render quiz
+        }
+
+        function calculatePerformancePoints() {
+            let points = 0;
+            const water = parseFloat(dailyWaterIntakeInput.value);
+            const steps = parseInt(dailyStepCountInput.value);
+
+            if (dailyWorkoutCompletedCheckbox.checked) {
+                points += 5;
+            }
+            if (dailyCardioCompletedCheckbox.checked) {
+                points += 3;
+            }
+            if (!isNaN(water) && water > 0) {
+                points += Math.min(Math.floor(water / 0.5), 6);
+            }
+            if (!isNaN(steps) && steps > 0) {
+                points += Math.min(Math.floor(steps / 2000), 5);
+            }
+            return points;
+        }
+
+        async function saveDailyLog() {
+            if (db && userId && isAuthReady) {
+                const todayDate = getCurrentDate();
+                const dailyLogDocRef = doc(db, `artifacts/${__app_id}/users/${userId}/dailyLogs`, todayDate);
+
+                const newPointsEarnedToday = calculatePerformancePoints();
+                pointsEarnedToday = newPointsEarnedToday;
+
+                userPoints += newPointsEarnedToday;
+                await saveUserPoints(userPoints);
+
+                try {
+                    await setDoc(dailyLogDocRef, {
+                        waterIntake: dailyWaterIntakeInput.value,
+                        carbs: dailyCarbsInput.value,
+                        fats: dailyFatsInput.value,
+                        protein: dailyProteinInput.value,
+                        fiber: dailyFiberInput.value,
+                        calories: dailyCaloriesInput.value,
+                        workoutCompleted: dailyWorkoutCompletedCheckbox.checked,
+                        stepCount: dailyStepCountInput.value,
+                        cardioCompleted: dailyCardioCompletedCheckbox.checked,
+                        pointsEarned: newPointsEarnedToday,
+                        timestamp: new Date().toISOString(),
+                    }, { merge: true });
+                    dailyLogMessage = `Daily log saved successfully! You earned ${newPointsEarnedToday} performance points.`;
+                    setTimeout(() => {
+                        dailyLogMessage = '';
+                        updateDailyTrackerView();
+                    }, 5000);
+                } catch (dbError) {
+                    console.error("Error saving daily log:", dbError);
+                    dailyLogMessage = `Failed to save daily log: ${dbError.message}`;
+                } finally {
+                    updateDailyTrackerView(); // Update UI with message
+                }
+            } else {
+                dailyLogMessage = "Authentication not ready or database not initialized.";
+                updateDailyTrackerView();
+            }
+        }
+
+        async function loadDailyLog() {
+            if (db && userId && isAuthReady) {
+                const todayDate = getCurrentDate();
+                const dailyLogDocRef = doc(db, `artifacts/${__app_id}/users/${userId}/dailyLogs`, todayDate);
+                try {
+                    const docSnap = await getDoc(dailyLogDocRef);
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        dailyWaterIntake = data.waterIntake || '';
+                        dailyCarbs = data.carbs || '';
+                        dailyFats = data.fats || '';
+                        dailyProtein = data.protein || '';
+                        dailyFiber = data.fiber || '';
+                        dailyCalories = data.calories || '';
+                        dailyWorkoutCompleted = data.workoutCompleted || false;
+                        dailyStepCount = data.stepCount || '';
+                        dailyCardioCompleted = data.cardioCompleted || false;
+                        pointsEarnedToday = data.pointsEarned || 0;
+                        dailyLogMessage = `Loaded log for ${todayDate}. You earned ${data.pointsEarned || 0} performance points for today.`;
+                    } else {
+                        dailyLogMessage = `No log found for ${todayDate}. Start tracking!`;
+                        pointsEarnedToday = 0;
+                        // Clear inputs if no log exists for today
+                        dailyWaterIntake = '';
+                        dailyCarbs = '';
+                        dailyFats = '';
+                        dailyProtein = '';
+                        dailyFiber = '';
+                        dailyCalories = '';
+                        dailyWorkoutCompleted = false;
+                        dailyStepCount = '';
+                        dailyCardioCompleted = false;
+                    }
+                } catch (dbError) {
+                    console.error("Error loading daily log:", dbError);
+                    dailyLogMessage = `Failed to load daily log: ${dbError.message}`;
+                } finally {
+                    updateDailyTrackerView(); // Update UI with loaded data
+                }
+            }
+        }
+
+        // --- Event Listeners ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Initialize Firebase
+            try {
+                const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        isAuthReady = true;
+                    } else {
+                        try {
+                            if (typeof __initial_auth_token !== 'undefined') {
+                                await signInWithCustomToken(auth, __initial_auth_token);
+                            } else {
+                                await signInAnonymously(auth);
+                            }
+                            userId = auth.currentUser?.uid || crypto.randomUUID();
+                            isAuthReady = true;
+                        } catch (authError) {
+                            console.error("Firebase Auth Error:", authError);
+                            userId = crypto.randomUUID();
+                            isAuthReady = true;
+                        }
+                    }
+                    quoteOfTheDay = getRandomQuote(); // Set quote on auth ready
+                    await loadUserData(); // Load user data after auth is ready
+                    renderView('home'); // Render home view initially
+                });
+            } catch (initError) {
+                console.error("Firebase Initialization Error:", initError);
+                userId = crypto.randomUUID();
+                isAuthReady = true;
+                quoteOfTheDay = getRandomQuote();
+                await loadUserData(); // Attempt to load user data even if Firebase init failed for local fallback
+                renderView('home');
+            }
+
+            // Navigation Buttons
+            document.getElementById('profile-button').addEventListener('click', () => renderView('myProfile'));
+            document.getElementById('assistant-btn').addEventListener('click', () => renderView('assistant'));
+            document.getElementById('quiz-btn').addEventListener('click', () => {
+                restartQuiz(); // Reset quiz state when entering quiz view
+                renderView('quiz');
+            });
+            document.getElementById('motivation-btn').addEventListener('click', () => renderView('motivation'));
+            document.getElementById('daily-tracker-btn').addEventListener('click', () => renderView('dailyTracker'));
+            document.getElementById('budget-meals-btn').addEventListener('click', () => renderView('budgetMeals'));
+            document.getElementById('exercises-btn').addEventListener('click', () => renderView('exercises'));
+
+            document.querySelectorAll('.back-to-home-btn').forEach(button => {
+                button.addEventListener('click', () => renderView('home'));
+            });
+
+            // Assistant View Listeners
+            goalButtons.forEach(button => {
+                button.addEventListener('click', (e) => selectGoal(e.currentTarget.dataset.goal));
+            });
+            getAdviceBtn.addEventListener('click', handleQuery);
+
+            // Quiz View Listeners
+            quizNextBtn.addEventListener('click', handleNextQuestion);
+            quizRestartBtn.addEventListener('click', restartQuiz);
+            popupOkBtn.addEventListener('click', () => {
+                showCorrectAnswerPopup = false;
+                updateQuizView();
+            });
+
+            // Daily Tracker Listeners
+            saveDailyLogBtn.addEventListener('click', saveDailyLog);
+
+            // Input change listeners for saving profile data on change (for assistant view)
+            heightInput.addEventListener('change', (e) => { height = e.target.value; });
+            weightInput.addEventListener('change', (e) => { weight = e.target.value; });
+            chestInput.addEventListener('change', (e) => { chest = e.target.value; });
+            waistInput.addEventListener('change', (e) => { waist = e.target.value; });
+            hipsInput.addEventListener('change', (e) => { hips = e.target.value; });
+            healthIssuesTextarea.addEventListener('change', (e) => { healthIssues = e.target.value; });
+            pastSurgeriesTextarea.addEventListener('change', (e) => { pastSurgeries = e.target.value; });
+            queryInput.addEventListener('change', (e) => { query = e.target.value; });
+        });
+    </script>
+</body>
+</html>
